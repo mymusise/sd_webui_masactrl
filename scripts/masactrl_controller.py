@@ -853,12 +853,12 @@ class MasaController:
     def mode_init(self, mode:MasaControllerMode, masa_start_step=5, masa_start_layer=10, mask_threshold=0.1, foreground_indexes=[1]):
         self.current_timestep = -1
         self.mode = mode
-        match mode:
-            case MasaControllerMode.LOGGING:
+        if mode:
+            if mode == MasaControllerMode.LOGGING:
                 self.logging_attach_xattn()
                 self.logging_attach_sattn()
 
-            case MasaControllerMode.RECON | MasaControllerMode.LOGRECON:
+            elif mode in [MasaControllerMode.RECON, MasaControllerMode.LOGRECON]:
                 if mode == MasaControllerMode.LOGRECON:
                     self.log_recon = True
                     self.logging_attach_xattn()
@@ -882,13 +882,13 @@ class MasaController:
 
 
     def mode_end(self, mode:MasaControllerMode, foreground_indexes=None):
-        match mode:
-            case MasaControllerMode.LOGGING:
+        if mode:
+            if mode == MasaControllerMode.LOGGING:
                 self.logging_detach_all()
                 self.calculate_reconstruction_maps()
-            case MasaControllerMode.RECON:
+            elif mode == MasaControllerMode.RECON:
                 self.recon_detach_all()
-            case MasaControllerMode.LOGRECON:
+            elif mode == MasaControllerMode.LOGRECON:
                 self.recon_detach_all()
                 self.logging_detach_xattn()
 
