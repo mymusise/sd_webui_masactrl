@@ -158,26 +158,19 @@ class Script(scripts.Script):
             on_cfg_denoiser(self.denoiser_callback)
         masactrl_mode, masa_start_step, masa_start_layer, mask_threshold, foreground_indexes_text = args
         foreground_indexes = [int(v) for v in foreground_indexes_text.split(",")]
-
-
-        match masactrl_mode:
-            case MasaControllerMode.LOGGING | MasaControllerMode.RECON | MasaControllerMode.LOGRECON:
+        if masactrl_mode:
+            if masactrl_mode in [MasaControllerMode.LOGGING, MasaControllerMode.RECON, MasaControllerMode.LOGRECON]:
                 shared.masa_controller.mode_init(masactrl_mode, int(masa_start_step), int(masa_start_layer), mask_threshold, foreground_indexes)
-            case MasaControllerMode.IDLE:
+            elif masactrl_mode == MasaControllerMode.IDLE:
                 pass
-
-
-
-
-
 
 
         return
 
     def postprocess(self, p, processed, *args):
         masactrl_mode, masa_start_step, masa_start_layer, mask_threshold, foreground_indexes_textbox = args
-        match masactrl_mode:
-            case MasaControllerMode.LOGGING | MasaControllerMode.RECON | MasaControllerMode.LOGRECON:
+        if masactrl_mode:
+            if masactrl_mode in [MasaControllerMode.LOGGING, MasaControllerMode.RECON, MasaControllerMode.LOGRECON]:
                 shared.masa_controller.mode_end(masactrl_mode, foreground_indexes_textbox)
-            case MasaControllerMode.IDLE:
+            elif masactrl_mode == MasaControllerMode.IDLE:
                 pass
